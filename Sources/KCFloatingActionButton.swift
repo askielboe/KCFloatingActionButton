@@ -178,6 +178,11 @@ open class KCFloatingActionButton: UIView {
     fileprivate var overlayViewDidCompleteOpenAnimation: Bool = true
 
     /**
+        Keep track of whether the menu is open or not, to prevent reopening which causes animation issues.
+     */
+    fileprivate var isOpen: Bool = false
+
+    /**
         If you created this object from storyboard or `initWithFrame`, this property set true.
     */
     fileprivate var isCustomFrame: Bool = false
@@ -255,6 +260,9 @@ open class KCFloatingActionButton: UIView {
         Items open.
     */
     open func open() {
+
+        guard !isOpen else { return }
+
         if(items.count > 0){
 
             setOverlayView()
@@ -271,6 +279,7 @@ open class KCFloatingActionButton: UIView {
                     self.buttonImageView.transform = CGAffineTransform(rotationAngle: self.degreesToRadians(self.rotationDegrees))
                     self.overlayView.alpha = 1
                 }, completion: {(f) -> Void in
+                    self.isOpen = true
                     self.overlayViewDidCompleteOpenAnimation = true
             })
 
@@ -309,6 +318,7 @@ open class KCFloatingActionButton: UIView {
                     self.buttonImageView.transform = CGAffineTransform(rotationAngle: self.degreesToRadians(0))
                     self.overlayView.alpha = 0
                 }, completion: {(f) -> Void in
+                    self.isOpen = false
                     if self.overlayViewDidCompleteOpenAnimation {
                         self.overlayView.removeFromSuperview()
                     }
